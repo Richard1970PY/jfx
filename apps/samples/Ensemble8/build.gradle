@@ -34,10 +34,19 @@ apply plugin:'application'
 
 def mainClassName = "ensemble.EnsembleApp"
 
+repositories {
+    mavenCentral()
+}
+
 def FileCollection apachecp = files(
    "./lib/lucene-core-7.7.3.jar",
    "./lib/lucene-grouping-7.7.3.jar",
    "./lib/lucene-queryparser-7.7.3.jar")
+
+dependencies {
+    implementation 'org.controlsfx:controlsfx:11.1.0'
+    implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
+}
 
 sourceSets {
     main {
@@ -52,6 +61,7 @@ sourceSets {
                     'src/samples/resources'
         }
         compileClasspath += apachecp
+        runtimeClasspath += configurations.runtimeClasspath
     }
 }
 

@@ -32,7 +32,10 @@
 package ensemble;
 
 
-import ensemble.control.Popover;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.scene.layout.VBox;
+import org.controlsfx.control.PopOver;
 import ensemble.control.SearchBox;
 import ensemble.control.TitledToolBar;
 import ensemble.generated.Samples;
@@ -93,10 +96,12 @@ public class EnsembleApp extends Application {
     private Button homeButton;
     private ToggleButton listButton;
     private ToggleButton searchButton;
+    private Button notificationButton;
     private final SearchBox searchBox = new SearchBox();
     private PageBrowser pageBrowser;
     private Popover sampleListPopover;
     private SearchPopover searchPopover;
+    private PopOver notificationPopover;
     private MenuBar menuBar;
 
     static {
@@ -186,8 +191,11 @@ public class EnsembleApp extends Application {
         homeButton.setGraphic(new Region());
         listButton.setGraphic(new Region());
         searchButton.setGraphic(new Region());
+        notificationButton = new Button();
+        notificationButton.setGraphic(new FontAwesomeIconView(FontAwesomeIcon.BELL));
+        notificationButton.getStyleClass().add("transparent-button");
         toolBar.addLeftItems(navButtons,listButton);
-        toolBar.addRightItems(searchBox);
+        toolBar.addRightItems(searchBox, notificationButton);
 
         // create PageBrowser
         pageBrowser = new PageBrowser();
@@ -271,6 +279,24 @@ public class EnsembleApp extends Application {
         // create and setup search popover
         searchPopover = new SearchPopover(searchBox,pageBrowser);
         root.getChildren().add(searchPopover);
+
+        // create and setup notification popover
+        notificationPopover = new PopOver();
+        VBox notificationContent = new VBox();
+        notificationContent.setPadding(new Insets(10));
+        notificationContent.setSpacing(10);
+        notificationContent.getStyleClass().add("notification-popover");
+        Label notificationTitle = new Label("Notificaciones");
+        notificationTitle.getStyleClass().add("notification-title");
+        ListView<String> notificationList = new ListView<>();
+        notificationList.getItems().addAll(
+                "Recordatorio: Finaliza el curso 'Elaboración de Documentos'.",
+                "Actualización: Se ha registrado un nuevo alumno en 'Costo de Producción'.",
+                "Alerta: La asistencia del alumno Daniel Sosa es inferior al 50%."
+        );
+        notificationContent.getChildren().addAll(notificationTitle, notificationList);
+        notificationPopover.setContentNode(notificationContent);
+        notificationButton.setOnAction(e -> notificationPopover.show(notificationButton));
     }
 
     private RadioMenuItem screenSizeMenuItem(String text, final int width, final int height, final boolean retina, ToggleGroup tg) {
@@ -307,7 +333,10 @@ public class EnsembleApp extends Application {
 
     private void setStylesheets() {
         final String EXTERNAL_STYLESHEET = "http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600";
-        scene.getStylesheets().setAll("/ensemble/EnsembleStylesCommon.css");
+        scene.getStylesheets().setAll(
+                "/ensemble/EnsembleStylesCommon.css",
+                "/ensemble/NotificationStyles.css"
+        );
         Thread backgroundThread = new Thread(() -> {
             try {
                 URL url = new URL(EXTERNAL_STYLESHEET);

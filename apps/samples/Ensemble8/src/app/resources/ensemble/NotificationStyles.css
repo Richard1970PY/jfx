@@ -1,0 +1,17 @@
+.transparent-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.notification-popover .popover-content {
+    -fx-background-color: #f4f4f4;
+    -fx-border-color: #c0c0c0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.notification-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
