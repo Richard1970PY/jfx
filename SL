@@ -1,0 +1,142 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+
+import org.controlsfx.control.PopOver;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+
+/*
+ * NOTA SOBRE DEPENDENCIAS:
+ * Para que este código funcione, necesitas tener las siguientes dependencias en tu proyecto.
+ * Si usas Maven, puedes añadirlas a tu archivo `pom.xml`.
+ *
+ * <!-- Dependencias de JavaFX -->
+ * <dependency>
+ * <groupId>org.openjfx</groupId>
+ * <artifactId>javafx-controls</artifactId>
+ * <version>21</version>
+ * </dependency>
+ *
+ * <!-- Librería para el PopOver -->
+ * <dependency>
+ * <groupId>org.controlsfx</groupId>
+ * <artifactId>controlsfx</artifactId>
+ * <version>11.1.2</version>
+ * </dependency>
+ *
+ * <!-- Librería para los iconos (FontAwesome) -->
+ * <dependency>
+ * <groupId>org.kordamp.ikonli</groupId>
+ * <artifactId>ikonli-javafx</artifactId>
+ * <version>12.3.1</version>
+ * </dependency>
+ * <dependency>
+ * <groupId>org.kordamp.ikonli</groupId>
+ * <artifactId>ikonli-fontawesome5-pack</artifactId>
+ * <version>12.3.1</version>
+ * </dependency>
+ */
+public class NotificationSystemExample extends Application {
+
+    private PopOver notificationPopOver;
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Gestión de Cursos - Demo");
+
+        // Layout principal de la aplicación
+        BorderPane root = new BorderPane();
+
+        // --- BARRA DE HERRAMIENTAS SUPERIOR ---
+        ToolBar toolBar = new ToolBar();
+
+        // Botón de notificaciones con icono
+        Button notificationsButton = createNotificationsButton();
+        
+        // Añadimos el botón a la barra de herramientas
+        toolBar.getItems().add(notificationsButton);
+
+        root.setTop(toolBar);
+
+        // --- CONTENIDO CENTRAL (simulado) ---
+        Label mainContent = new Label("Contenido principal de la aplicación aquí.");
+        mainContent.setFont(new Font(18));
+        root.setCenter(mainContent);
+
+        // --- CONFIGURACIÓN DE LA ESCENA ---
+        Scene scene = new Scene(root, 800, 600);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    /**
+     * Crea el botón de notificaciones con un icono de campana.
+     * @return Un Button de JavaFX configurado.
+     */
+    private Button createNotificationsButton() {
+        // Crear el icono de la campana usando Ikonli
+        FontIcon bellIcon = new FontIcon(FontAwesomeSolid.BELL);
+        bellIcon.setIconSize(20);
+
+        // Crear el botón y asignarle el icono
+        Button notificationsButton = new Button();
+        notificationsButton.setGraphic(bellIcon);
+
+        // Estilo para que parezca un botón de icono (sin fondo ni borde)
+        notificationsButton.setStyle("-fx-background-color: transparent; -fx-padding: 5;");
+        
+        // Acción al hacer clic en el botón
+        notificationsButton.setOnAction(event -> {
+            if (notificationPopOver == null) {
+                notificationPopOver = new PopOver(createNotificationContent());
+                notificationPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+                notificationPopOver.setTitle("Notificaciones");
+            }
+            notificationPopOver.show(notificationsButton);
+        });
+
+        return notificationsButton;
+    }
+
+    /**
+     * Crea el contenido que se mostrará dentro del PopOver de notificaciones.
+     * @return Un VBox con la lista de notificaciones.
+     */
+    private VBox createNotificationContent() {
+        // Contenedor principal para el contenido del PopOver
+        VBox contentBox = new VBox(10);
+        contentBox.setPadding(new Insets(15));
+        contentBox.setPrefWidth(350);
+
+        // Título del panel
+        Label titleLabel = new Label("Notificaciones");
+        titleLabel.setFont(new Font("System Bold", 16));
+        
+        // Lista para mostrar las notificaciones (usando datos de ejemplo)
+        ListView<String> notificationList = new ListView<>();
+        notificationList.getItems().addAll(
+            "Recordatorio: Finaliza el curso 'Elaboración de Documentos'.",
+            "Actualización: Se ha registrado un nuevo alumno en 'Costo de Producción'.",
+            "Alerta: La asistencia del alumno Daniel Sosa es inferior al 50%."
+        );
+        notificationList.setPrefHeight(150);
+
+        // Añadir los componentes al contenedor
+        contentBox.getChildren().addAll(titleLabel, notificationList);
+
+        return contentBox;
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
